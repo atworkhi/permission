@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--上下文相关的注解会被管理-->
+    <context:annotation-config></context:annotation-config>
+
+    <!--启动注解驱动的springmvc功能-->
+    <mvc:annotation-driven/>
+
+    <!--启动包扫描功能-->
+    <context:component-scan base-package="com.hanxx.permission.controller" />
+    <context:component-scan base-package="com.hanxx.permission.service" />
+
+    <!--配置bean-->
+    <!--获取requestMapping请求的URL和方法-->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+    <!--返回自定义的视图格式-->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+    <!--json返回处理-->
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+
+    <!--jsp返回视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--前缀-->
+        <property name="prefix" value="/views/" />
+        <!--后缀-->
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+</beans>
