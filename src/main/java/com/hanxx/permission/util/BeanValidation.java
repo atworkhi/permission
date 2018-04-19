@@ -81,6 +81,11 @@ public class BeanValidation {
         }
     }
 
+    /**
+     * 验证如果不通过抛出自定义验证异常
+     * @param object
+     * @throws ParamValidateException
+     */
     public static void validateException(Object object) throws ParamValidateException{
         Map<String,String> map = BeanValidation.validateObject(object);
         if(MapUtils.isNotEmpty(map)){

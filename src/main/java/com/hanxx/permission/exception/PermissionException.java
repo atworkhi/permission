@@ -3,7 +3,7 @@ package com.hanxx.permission.exception;
 /**
  * @Author hanxx
  * @Date 2018/4/19-16:42
- * 自定义异常
+ * 自定义验证异常
  */
 public class PermissionException extends RuntimeException{
     public PermissionException() {

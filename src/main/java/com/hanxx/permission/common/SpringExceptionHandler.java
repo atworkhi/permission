@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * 异常处理类
  */
 @Slf4j
-public class SpringException implements HandlerExceptionResolver{
+public class SpringExceptionHandler implements HandlerExceptionResolver{
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object o, Exception e) {
        String url = request.getRequestURL().toString();  //获取请求url

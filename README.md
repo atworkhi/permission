@@ -560,7 +560,7 @@ exception为页面请求异常，需要创建exception.jsp使用
 
 把异常处理注册到springBean中：
  <!--自定义异常处理类-->
- <bean class="com.hanxx.permission.common.SpringException"/>
+ <bean class="com.hanxx.permission.common.SpringExceptionHandler"/>
 测试：
 /**
  * 测试开发环境
@@ -661,6 +661,7 @@ public class TestController {
                  return validate(first,new Class[0]);
              }
          }
+         
      
      }
      单元测试：
@@ -695,7 +696,312 @@ public class TestController {
 
         return JsonData.success("Hello, validate");
     }
-
-
         
+```
+自定义验证异常： 由于经常要用到判断map是否为空 所以可以引用MapUtils工具包
+```
+工具包：
+<dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
+新建验证异常：
+/**
+ * @Author hanxx
+ * @Date 2018/4/19-16:42
+ * 自定义验证异常
+ */
+public class PermissionException extends RuntimeException{
+    public PermissionException() {
+        super();
+    }
+
+    public PermissionException(String message) {
+        super(message);
+    }
+
+    public PermissionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PermissionException(Throwable cause) {
+        super(cause);
+    }
+
+    protected PermissionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+}
+在全局异常添加对验证异常的处理：
+        // .json 请求  .page页面请求
+        if(url.endsWith(".json")){  //.json结尾为json请求
+            //如果属于我们自定义的异常
+            if (e instanceof PermissionException || e instanceof ParamValidateException){
+                JsonData result = JsonData.fail(e.getMessage());
+                //返回视图为map类型的json springMvc配置文件中定义为 jsonView
+                mv = new ModelAndView("jsonView",result.toMap());
+            } else {
+                log.error("未知json异常 ,URL:"+url , e); //记录异常日志
+                JsonData result = JsonData.fail(errorDefault);
+                mv = new ModelAndView("jsonView",result.toMap());
+            }
+        }else if (url.endsWith(".page")) {     //页面返回
+            log.error("未知page异常,URL:"+url , e); //记录异常日志
+            JsonData result = JsonData.fail(errorDefault);
+            // 页面会获取 View 中的exception页面处理
+            mv = new ModelAndView("exception",result.toMap());
+        }else {
+            JsonData result = JsonData.fail(errorDefault);
+            mv = new ModelAndView("jsonView",result.toMap());
+        }
+在自定义验证方法中添加验证并对验证是否通过的方法：
+    /**
+     * 验证如果不通过抛出自定义验证异常
+     * @param object
+     * @throws ParamValidateException
+     */
+    public static void validateException(Object object) throws ParamValidateException{
+        Map<String,String> map = BeanValidation.validateObject(object);
+        if(MapUtils.isNotEmpty(map)){
+            throw  new ParamValidateException(map.toString());
+        }
+    }
+    验证使用：
+    model:
+    @Getter
+    @Setter
+    public class Param {
+    
+        @NotBlank(message = "msg不能为空")
+        private String msg;
+        @NotNull(message = "id不能为空")
+        private Integer id;
+    }
+    controller:
+     @RequestMapping("/validate.json")  //返回json请求规定加上.json
+        @ResponseBody
+        public JsonData validate(Param param){
+            log.info("Hello validate!!! ");
+            /*try {
+                Map<String,String> map = BeanValidation.validateObject(param);
+                if (MapUtils.isNotEmpty(map)){
+                    for (Map.Entry<String,String> entry : map.entrySet()){
+                        log.info("{}--{}",entry.getKey(),entry.getValue());
+                    }
+                }
+            } catch (Exception e){
+            }*/
+            // 使用验证异常
+            BeanValidation.validateException(param);
+    
+            return JsonData.success("Hello, validate");
+        }
+```
+json转换工具：
+```
+依赖：
+ <!--jackson-->
+        <!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+ 编程：
+ /**
+  * Author:hangx
+  * Date: 2018/4/19 21:22
+  * DESC: json转化工具
+  */
+ @Slf4j
+ public class JsonMapper {
+ 
+     private static ObjectMapper objectMapper = new ObjectMapper();
+ 
+     //初始化配置
+     static {
+         //config
+         objectMapper.disable(DeserializationConfig.Feature.FAIL_ON_NULL_FOR_PRIMITIVES);
+         objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS,false);
+         objectMapper.setFilters(new SimpleFilterProvider().setFailOnUnknownId(false));
+         objectMapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+     }
+ 
+     // 对象转换为字符串
+     public static <T> String objString(T src){
+         if (src == null){
+             return null;
+         }
+         try {
+             return src instanceof String ? (String) src : objectMapper.writeValueAsString(src);
+         } catch (Exception e){
+             log.warn("object 转换 string 出错：",e);
+             return null;
+         }
+     }
+ 
+     //字符串转对象
+     public static <T> T stringObj(String str, TypeReference<T> type){
+         if (str == null || type == null){
+             return null;
+         }
+         try {
+             return (T) (type.getType().equals(String.class) ? str : objectMapper.readValue(str,type));
+         }catch (Exception e){
+             log.warn("string 转换 object 出错。String:{},type:{},error:{}",str,type.getType(),e.getMessage());
+             return null;
+         }
+     }
+ }
+```
+spring上下文工具：applicationContextHelper
+```
+/**
+ * Author:hangx
+ * Date: 2018/4/19 21:45
+ * DESC: spring上下文工具
+ */
+@Component("applicationContextHelper")  //spring管理
+public class ApplicationContextHelper implements ApplicationContextAware{
+
+    private static ApplicationContext applicationContext;   //全局的 applicationContext
+
+    @Override
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+        applicationContext = context;
+    }
+
+    /**
+     * 从springbean 上下文中取 class
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T popBean(Class<T> clazz){
+        if (applicationContext == null ){
+            return null;
+        }
+        return applicationContext.getBean(clazz);
+    }
+
+    /**
+     * 从springbean取出 名字 和 class
+     * @param name
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T popBean(String name,Class<T> clazz){
+        if (applicationContext == null ){
+            return null;
+        }
+        return applicationContext.getBean(name, clazz);
+    }
+
+}
+
+添加到spring-service配置文件中:
+    <!--spring上下文工具类-->
+    <bean class="com.hanxx.permission.common.ApplicationContextHelper" lazy-init="false" />
+单元测试：注意：mybatis-spring jar 依赖需要调整到 1.3.0
+<dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>1.3.0</version>
+</dependency>
+测试：
+ /**
+     * 验证spring自定义上下文与Json类型工具的转换
+     * @return
+     */
+    @RequestMapping("/application.json")  //返回json请求规定加上.json
+    @ResponseBody
+    public JsonData application(Param param){
+        log.info("Hello permission manager !!! ");
+        SysAclModuleMapper moduleMapper = ApplicationContextHelper.popBean(SysAclModuleMapper.class);
+        SysAclModule module = moduleMapper.selectByPrimaryKey(1);
+        log.info(JsonMapper.objString(module));
+        BeanValidation.validateException(param);
+        return JsonData.success("spring上下文与json转换类型成功！");
+    }
+        
+```
+HTTP请求前后的监听实现：interceptor
+```
+/**
+ * Author:hangx
+ * Date: 2018/4/19 22:09
+ * DESC: http请求监听的工具类
+ */
+@Slf4j
+public class HttpInterceptor extends HandlerInterceptorAdapter {
+    /**
+     * 请求处理之前
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String url = request.getRequestURI().toString();    //请求地址
+        Map map =request.getParameterMap();                 //请求参数
+        log.info("请求开始之前==》》url:{},params:{}",url, JsonMapper.objString(map));
+        return true;
+    }
+
+    /**
+     * 请求正常结束之后
+     * @param request
+     * @param response
+     * @param handler
+     * @param modelAndView
+     * @throws Exception
+     */
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        String url = request.getRequestURI().toString();    //请求地址
+        Map map =request.getParameterMap();                 //请求参数
+        log.info("请求正常结束后==》》url:{},params:{}",url, JsonMapper.objString(map));
+
+    }
+
+    /**
+     * 正常、异常请求结束都会调用
+     * @param request
+     * @param response
+     * @param handler
+     * @param ex
+     * @throws Exception
+     */
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        String url = request.getRequestURI().toString();    //请求地址
+        Map map =request.getParameterMap();                 //请求参数
+        log.info("请求结束后==》》url:{},params:{}",url, JsonMapper.objString(map));
+
+    }
+}
+
+配置到springservlet配置文件中：
+ <!--配置监听-->
+    <mvc:interceptors>
+        <bean class="com.hanxx.permission.common.HttpInterceptor" />
+    </mvc:interceptors>
+
 ```
