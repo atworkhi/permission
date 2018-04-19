@@ -23,7 +23,7 @@
 
 日志表：是对数据操作状态的更新，及操作日志的记录
 ### 编码实现
-springmvc:
+#### springmvc环境搭建:
 ```
 pom.xml:
     <properties>
@@ -371,5 +371,331 @@ mybatis config 配置：
 ```
 开发环境验证：
 ```
+如果IDEA使用 @Slf4j 找不到 log.
+安装插件 Lombok Plugin
+否则：
+    // Slf4j .Logger 日志
+    private final Logger logger = LoggerFactory.getLogger(TestController.class);
 
+@Controller
+@RequestMapping("/test")
+@Slf4j
+public class TestController {
+
+    @RequestMapping("/hello")
+    @ResponseBody
+    public String hello(){
+        log.info("Hello permission manager !!! ");
+        return JsonData.success("Hello, permission");
+    }
+}
+```
+#### 工具类的开发：
+```text
+mybatis generate使用生成核心类：
+导入核心jar , mysql驱动 与 配置文件 运行如下命令
+java -jar mybatis-generator-core-1.3.2.jar -configfile generator.xml
+
+项目接口定义-json:
+common包下
+@Getter
+@Setter
+public class JsonData {
+
+    // 返回结果
+    private boolean ret;
+
+    // 出现异常返回消息
+    private String msg;
+
+    //返回数据
+    private Object data;
+
+    /**
+     * 只返回是否成功的构造方法
+     * @param ret
+     */
+    public  JsonData (boolean ret){
+        this.ret=ret;
+    }
+
+    /**
+     * 成功的时候不返回任何数据
+     * @return
+     */
+    public  static JsonData success(){
+        //成功
+        return  new JsonData(true);
+    }
+    
+    /**
+     * 成功的时候返回 数据 与 消息
+     * @param o
+     * @param msg
+     * @return
+     */
+    public  static JsonData success(Object o, String msg){
+        //成功
+        JsonData jsonData = new JsonData(true);
+        jsonData.data = o;
+        jsonData.msg = msg;
+        return jsonData;
+    }
+
+    /**
+     * 成功时只返回数据
+     * @param o
+     * @return
+     */
+    public  static JsonData success(Object o){
+        //成功
+        JsonData jsonData = new JsonData(true);
+        jsonData.data = o;
+        return jsonData;
+    }
+    
+    /**
+     * 失败时只返回异常消息
+     * @param msg
+     * @return
+     */
+    public static JsonData fail(String msg){
+        // 失败
+        JsonData jsonData = new JsonData(false);
+        jsonData.msg = msg;
+        return jsonData;
+    }
+      /**
+         * 把数据转换成map类型 供 modelandview返回
+         * @return
+         */
+        public Map<String, Object> toMap(){
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("ret",ret);
+            map.put("msg",msg);
+            map.put("data",data);
+            return map;
+        }
+}
+全局异常的处理类：
+导入pom.xml
+ <!--jsp -api 封装异常处理需要的request与response-->
+        <!-- https://mvnrepository.com/artifact/org.apache.tomcat/jsp-api -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>6.0.36</version>
+        </dependency>
+  自定义异常：
+  /**
+   * @Author hanxx
+   * @Date 2018/4/19-16:42
+   * 自定义异常
+   */
+  public class PermissionException extends RuntimeException{
+      public PermissionException() {
+          super();
+      }
+  
+      public PermissionException(String message) {
+          super(message);
+      }
+  
+      public PermissionException(String message, Throwable cause) {
+          super(message, cause);
+      }
+  
+      public PermissionException(Throwable cause) {
+          super(cause);
+      }
+  
+      protected PermissionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+          super(message, cause, enableSuppression, writableStackTrace);
+      }
+  }
+自定义异常的处理方法： 在这里规定：凡事json请求在RequestMapping中加上.json 页面请求加上.page
+/**
+ * @Author hanxx
+ * @Date 2018/4/19-16:35
+ * 异常处理类
+ */
+@Slf4j
+public class SpringException implements HandlerExceptionResolver{
+    @Override
+    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object o, Exception e) {
+       String url = request.getRequestURL().toString();  //获取请求url
+        ModelAndView mv;    //视图
+        String errorDefault = "系统异常";
+
+        // .json 请求  .page页面请求
+        if(url.endsWith(".json")){  //.json结尾为json请求
+            //如果属于我们自定义的异常
+            if (e instanceof PermissionException){
+                JsonData result = JsonData.fail(e.getMessage());
+                //返回视图为map类型的json springMvc配置文件中定义为 jsonView
+                mv = new ModelAndView("jsonView",result.toMap());
+            } else {
+                log.error("未知json异常 ,URL:"+url , e); //记录异常日志
+                JsonData result = JsonData.fail(errorDefault);
+                mv = new ModelAndView("jsonView",result.toMap());
+            }
+        }else if (url.endsWith(".page")) {     //页面返回
+            log.error("未知page异常,URL:"+url , e); //记录异常日志
+            JsonData result = JsonData.fail(errorDefault);
+            // 页面会获取 View 中的exception页面处理
+            mv = new ModelAndView("exception",result.toMap());
+        }else {
+            JsonData result = JsonData.fail(errorDefault);
+            mv = new ModelAndView("jsonView",result.toMap());
+        }
+        return mv;
+    }
+}
+说明:  mv = new ModelAndView("jsonView",result.toMap()); 
+<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+其中 jsonView与配置中的id名一样
+
+mv = new ModelAndView("exception",result.toMap()); 
+exception为页面请求异常，需要创建exception.jsp使用
+
+把异常处理注册到springBean中：
+ <!--自定义异常处理类-->
+ <bean class="com.hanxx.permission.common.SpringException"/>
+测试：
+/**
+ * 测试开发环境
+ */
+@Controller
+@RequestMapping("/test")
+@Slf4j
+public class TestController {
+    @RequestMapping("/hello.json")  //返回json请求规定加上.json
+    @ResponseBody
+    public JsonData hello(){
+        log.info("Hello permission manager !!! ");
+        throw new PermissionException("我是自定义异常");
+        //return JsonData.success("Hello, very good");
+    }
+}
+校验工具 validation：
+引入依赖：
+  <!--校验工具类-->
+        <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.2.4.Final</version>
+        </dependency>
+     自定义校验：
+     /**
+      * @Author hanxx
+      * @Date 2018/4/19-17:17
+      * 自定义校验工具
+      */
+     public class BeanValidation {
+     
+         //创建校验工厂
+         private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+     
+         /**
+          * 单个校验
+          * @param t
+          * @param groups
+          * @param <T>
+          * @return
+          */
+         public static <T>Map<String, String> validate(T t,Class... groups){
+             Validator validator =validatorFactory.getValidator();
+             Set result = validator.validate(t, groups);
+             if(result.isEmpty()){
+                 return Collections.emptyMap();
+             }else {
+                 //发成错误放入 errors
+                 LinkedHashMap errors = Maps.newLinkedHashMap();
+                 // 遍历错误
+                 Iterator iterator = result.iterator();
+                 while (iterator.hasNext()){
+                     ConstraintViolation violation = (ConstraintViolation) iterator.next();
+                     //错误字段 与错误信息
+                     errors.put(violation.getPropertyPath().toString(),violation.getMessage());
+                 }
+                 return errors;
+             }
+         }
+     
+         /**
+          * 多个校验
+          * @param collection
+          * @return
+          */
+         public static Map<String, String> validateList(Collection<?> collection){
+             Preconditions.checkNotNull(collection);
+             Iterator iterator = collection.iterator();
+             Map errors;
+             do{
+                 if (! iterator.hasNext()){
+                     return Collections.emptyMap();
+                 }
+                 Object object =iterator.next();
+                 errors=validate(object, new Class[0]);
+             }while (errors.isEmpty());
+             return errors;
+         }
+     
+         /**
+          * 封装单个校验与多个校验
+          * @param first
+          * @param objects
+          * @return
+          */
+         public static Map<String, String> validateObject(Object first, Object...objects){
+             if (objects !=null && objects.length>0 ){
+                 return validateList(Lists.asList(first,objects));
+             }else {
+                 return validate(first,new Class[0]);
+             }
+         }
+     
+     }
+     单元测试：
+     /**
+      * 校验测试  model
+      * @Author hanxx
+      * @Date 2018/4/19-17:36
+      */
+     @Getter
+     @Setter
+     public class Param {
+     
+         @NotBlank
+         private String msg;
+         @NotNull
+         private Integer id;
+     }
+    controller:
+   @RequestMapping("/validate.json")  //返回json请求规定加上.json
+    @ResponseBody
+    public JsonData validate(Param param){
+        log.info("Hello validate!!! ");
+        try {
+            Map<String,String> map = BeanValidation.validateObject(param);
+            if (map !=null && map.entrySet().size() > 0){
+                for (Map.Entry<String,String> entry : map.entrySet()){
+                    log.info("{}--{}",entry.getKey(),entry.getValue());
+                }
+            }
+        } catch (Exception e){
+        }
+
+        return JsonData.success("Hello, validate");
+    }
+
+
+        
 ```

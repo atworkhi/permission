@@ -21,10 +21,14 @@
     <context:component-scan base-package="com.hanxx.permission.service" />
 
     <!--配置bean-->
+    <!--自定义异常处理类-->
+    <bean class="com.hanxx.permission.common.SpringException"/>
+
     <!--获取requestMapping请求的URL和方法-->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
     <!--返回自定义的视图格式-->
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+
     <!--json返回处理-->
     <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
 
