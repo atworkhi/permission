@@ -1,7 +1,16 @@
 package com.hanxx.permission.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.Date;
 
+@Builder    //包装为一个构建者模式，编译时增加了一个Builder内部类和全字段的构造器
+@NoArgsConstructor  //不需要参数的构造方法
+@AllArgsConstructor //所有参数的构造方法
+@ToString   //tostring
 public class SysDept {
     private Integer id;
 

@@ -1,4 +1,4 @@
-package com.hanxx.permission.test;
+package com.hanxx.permission.param;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
-public class Param {
+public class TestParam {
 
     @NotBlank(message = "msg不能为空")
     private String msg;

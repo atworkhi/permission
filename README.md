@@ -107,18 +107,18 @@ web.xml配置：
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
   <!--spring bean配置文件所在的目录-->
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:applicationContext.xml</param-value>
-  </context-param>
+  <context-testParam>
+    <testParam-name>contextConfigLocation</testParam-name>
+    <testParam-value>classpath:applicationContext.xml</testParam-value>
+  </context-testParam>
   <!--springmvc 配置 -->
   <servlet>
     <servlet-name>spring</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>classpath:springServlet.xml</param-value>
-    </init-param>
+    <init-testParam>
+      <testParam-name>contextConfigLocation</testParam-name>
+      <testParam-value>classpath:springServlet.xml</testParam-value>
+    </init-testParam>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
@@ -129,14 +129,14 @@ web.xml配置：
   <filter>
     <filter-name>encodingFilter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>UTF-8</param-value>
-    </init-param>
-    <init-param>
-      <param-name>forceEncoding</param-name>
-      <param-value>true</param-value>
-    </init-param>
+    <init-testParam>
+      <testParam-name>encoding</testParam-name>
+      <testParam-value>UTF-8</testParam-value>
+    </init-testParam>
+    <init-testParam>
+      <testParam-name>forceEncoding</testParam-name>
+      <testParam-value>true</testParam-value>
+    </init-testParam>
   </filter>
   <filter-mapping>
     <filter-name>encodingFilter</filter-name>
@@ -262,14 +262,14 @@ web.xml:
     <servlet-name>DruidSevlet</servlet-name>
     <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
     <!--登录名密码-->
-    <init-param>
-      <param-name>loginUsername</param-name>
-      <param-value>druid</param-value>
-    </init-param>
-    <init-param>
-      <param-name>loginPassword</param-name>
-      <param-value>druid</param-value>
-    </init-param>
+    <init-testParam>
+      <testParam-name>loginUsername</testParam-name>
+      <testParam-value>druid</testParam-value>
+    </init-testParam>
+    <init-testParam>
+      <testParam-name>loginPassword</testParam-name>
+      <testParam-value>druid</testParam-value>
+    </init-testParam>
   </servlet>
   <servlet-mapping>
     <servlet-name>DruidSevlet</servlet-name>
@@ -280,10 +280,10 @@ web.xml:
     <filter-name>DruidFilter</filter-name>
     <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
     <!--过滤掉的拦截参数-->
-    <init-param>
-      <param-name>exclusions</param-name>
-      <param-value>*.js,*.css,*.png,*.ico,*.gif,/sys/druid/*</param-value>
-    </init-param>
+    <init-testParam>
+      <testParam-name>exclusions</testParam-name>
+      <testParam-value>*.js,*.css,*.png,*.ico,*.gif,/sys/druid/*</testParam-value>
+    </init-testParam>
   </filter>
   <filter-mapping>
     <filter-name>DruidFilter</filter-name>
@@ -413,7 +413,7 @@ public class JsonData {
 
     /**
      * 只返回是否成功的构造方法
-     * @param ret
+     * @testParam ret
      */
     public  JsonData (boolean ret){
         this.ret=ret;
@@ -430,8 +430,8 @@ public class JsonData {
     
     /**
      * 成功的时候返回 数据 与 消息
-     * @param o
-     * @param msg
+     * @testParam o
+     * @testParam msg
      * @return
      */
     public  static JsonData success(Object o, String msg){
@@ -444,7 +444,7 @@ public class JsonData {
 
     /**
      * 成功时只返回数据
-     * @param o
+     * @testParam o
      * @return
      */
     public  static JsonData success(Object o){
@@ -456,7 +456,7 @@ public class JsonData {
     
     /**
      * 失败时只返回异常消息
-     * @param msg
+     * @testParam msg
      * @return
      */
     public static JsonData fail(String msg){
@@ -605,9 +605,9 @@ public class TestController {
      
          /**
           * 单个校验
-          * @param t
-          * @param groups
-          * @param <T>
+          * @testParam t
+          * @testParam groups
+          * @testParam <T>
           * @return
           */
          public static <T>Map<String, String> validate(T t,Class... groups){
@@ -631,7 +631,7 @@ public class TestController {
      
          /**
           * 多个校验
-          * @param collection
+          * @testParam collection
           * @return
           */
          public static Map<String, String> validateList(Collection<?> collection){
@@ -650,8 +650,8 @@ public class TestController {
      
          /**
           * 封装单个校验与多个校验
-          * @param first
-          * @param objects
+          * @testParam first
+          * @testParam objects
           * @return
           */
          public static Map<String, String> validateObject(Object first, Object...objects){
@@ -682,10 +682,10 @@ public class TestController {
     controller:
    @RequestMapping("/validate.json")  //返回json请求规定加上.json
     @ResponseBody
-    public JsonData validate(Param param){
+    public JsonData validate(Param testParam){
         log.info("Hello validate!!! ");
         try {
-            Map<String,String> map = BeanValidation.validateObject(param);
+            Map<String,String> map = BeanValidation.validateObject(testParam);
             if (map !=null && map.entrySet().size() > 0){
                 for (Map.Entry<String,String> entry : map.entrySet()){
                     log.info("{}--{}",entry.getKey(),entry.getValue());
@@ -764,7 +764,7 @@ public class PermissionException extends RuntimeException{
 在自定义验证方法中添加验证并对验证是否通过的方法：
     /**
      * 验证如果不通过抛出自定义验证异常
-     * @param object
+     * @testParam object
      * @throws ParamValidateException
      */
     public static void validateException(Object object) throws ParamValidateException{
@@ -787,10 +787,10 @@ public class PermissionException extends RuntimeException{
     controller:
      @RequestMapping("/validate.json")  //返回json请求规定加上.json
         @ResponseBody
-        public JsonData validate(Param param){
+        public JsonData validate(Param testParam){
             log.info("Hello validate!!! ");
             /*try {
-                Map<String,String> map = BeanValidation.validateObject(param);
+                Map<String,String> map = BeanValidation.validateObject(testParam);
                 if (MapUtils.isNotEmpty(map)){
                     for (Map.Entry<String,String> entry : map.entrySet()){
                         log.info("{}--{}",entry.getKey(),entry.getValue());
@@ -799,7 +799,7 @@ public class PermissionException extends RuntimeException{
             } catch (Exception e){
             }*/
             // 使用验证异常
-            BeanValidation.validateException(param);
+            BeanValidation.validateException(testParam);
     
             return JsonData.success("Hello, validate");
         }
@@ -887,8 +887,8 @@ public class ApplicationContextHelper implements ApplicationContextAware{
 
     /**
      * 从springbean 上下文中取 class
-     * @param clazz
-     * @param <T>
+     * @testParam clazz
+     * @testParam <T>
      * @return
      */
     public static <T> T popBean(Class<T> clazz){
@@ -900,9 +900,9 @@ public class ApplicationContextHelper implements ApplicationContextAware{
 
     /**
      * 从springbean取出 名字 和 class
-     * @param name
-     * @param clazz
-     * @param <T>
+     * @testParam name
+     * @testParam clazz
+     * @testParam <T>
      * @return
      */
     public static <T> T popBean(String name,Class<T> clazz){
@@ -930,18 +930,18 @@ public class ApplicationContextHelper implements ApplicationContextAware{
      */
     @RequestMapping("/application.json")  //返回json请求规定加上.json
     @ResponseBody
-    public JsonData application(Param param){
+    public JsonData application(Param testParam){
         log.info("Hello permission manager !!! ");
         SysAclModuleMapper moduleMapper = ApplicationContextHelper.popBean(SysAclModuleMapper.class);
         SysAclModule module = moduleMapper.selectByPrimaryKey(1);
         log.info(JsonMapper.objString(module));
-        BeanValidation.validateException(param);
+        BeanValidation.validateException(testParam);
         return JsonData.success("spring上下文与json转换类型成功！");
     }
         
 ```
 HTTP请求前后的监听实现：interceptor
-```
+```java
 /**
  * Author:hangx
  * Date: 2018/4/19 22:09
@@ -951,9 +951,9 @@ HTTP请求前后的监听实现：interceptor
 public class HttpInterceptor extends HandlerInterceptorAdapter {
     /**
      * 请求处理之前
-     * @param request
-     * @param response
-     * @param handler
+     * @testParam request
+     * @testParam response
+     * @testParam handler
      * @return
      * @throws Exception
      */
@@ -967,10 +967,10 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
 
     /**
      * 请求正常结束之后
-     * @param request
-     * @param response
-     * @param handler
-     * @param modelAndView
+     * @testParam request
+     * @testParam response
+     * @testParam handler
+     * @testParam modelAndView
      * @throws Exception
      */
     @Override
@@ -983,10 +983,10 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
 
     /**
      * 正常、异常请求结束都会调用
-     * @param request
-     * @param response
-     * @param handler
-     * @param ex
+     * @testParam request
+     * @testParam response
+     * @testParam handler
+     * @testParam ex
      * @throws Exception
      */
     @Override
@@ -1004,4 +1004,345 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
         <bean class="com.hanxx.permission.common.HttpInterceptor" />
     </mvc:interceptors>
 
+```
+### 实际功能的实现：
+##### 部门模块的开发：
+部门新增模块：
+```java
+//1. 部门层级结构的树形书工具类
+/**
+ * @Author hanxx
+ * @Date 2018/4/20-10:37
+ * Level 工具类
+ */
+public class LevelUtil {
+    // 层级的分隔符
+    public final static String SEPARATOR=".";
+    // level的层数开始
+    public final static String ROOT="0";
+
+    /**
+     * 层级的计算规则
+     * 首层：0
+     * 二层：0.1       0.2
+     * 三层：0.1.1     0.2.1
+     * @param parentLevel
+     * @param parentId
+     * @return
+     */
+    public static String calLevel(String parentLevel, int parentId){
+            // 引入apache-commons-lang3工具类
+            if(StringUtils.isBlank(parentLevel)) {  //判断是否为首层
+                return ROOT;
+            }else {
+                return StringUtils.join(parentLevel,SEPARATOR,parentId);
+            }
+    }
+}
+//2. 对原型添加 @build注解：
+@Builder    //包装为一个构建者模式，编译时增加了一个Builder内部类和全字段的构造器
+@NoArgsConstructor  //不需要参数的构造方法
+@AllArgsConstructor //所有参数的构造方法
+@ToString   //tostring
+public class SysDept {
+}
+//3.新建需要添加的字段：
+@Getter
+@Setter
+@ToString
+public class DeptParam {
+
+    private Integer id;  //id
+
+    @NotBlank(message = "部门名称不能为空")
+    @Length(max = 15, min = 2, message = "部门名称需要在2-15个字之间")
+    private String name;    //部门名称
+
+    private  Integer parentId;  //上级部门ID
+
+    @NotNull(message = "排序权重不能为空")
+    private Integer seq;    //排序
+
+    @Length(max = 150, message = "备注的长度不能超过150个字")
+    private String remark;  //备注
+}
+//4 .新增service的视线：
+public interface DeptService {
+
+    /**
+     *  验证添加或修改部门的名称是否存在
+     * @param parentId      父级部门ID
+     * @param paramName  部门名称
+     * @param paramId       部门ID
+     * @return
+     */
+    boolean check(Integer parentId,String paramName,Integer paramId);
+
+    /**
+     *  获取当前部门层级
+     * @param deptId
+     * @return
+     */
+    String getLevel(Integer deptId);
+
+    /**
+     * 保存新添加的部门
+     * @param param
+     */
+    void save(DeptParam param);
+}
+    //实现类的实现
+    //传入dept的 mapper
+    @Resource
+    private SysDeptMapper deptMapper;
+
+    @Override
+    public boolean check(Integer parentId, String paramName, Integer paramId) {
+        // TODO:
+        return true;
+    }
+
+    @Override
+    public String getLevel(Integer deptId) {
+        SysDept dept = deptMapper.selectByPrimaryKey(deptId);
+        if (dept == null){
+            return null;
+        }
+        return dept.getLevel(); //返回上一层部门的level
+    }
+
+    /**
+     * 保存部门类
+     * @param param
+     */
+    @Override
+    public void save(DeptParam param) {
+        //验证参数
+        BeanValidation.validateException(param);
+        //验证部门是否已存在
+        if (check(param.getParentId(),param.getName(),param.getId())){
+            throw new ParamValidateException("同一层级下部门名称已存在");
+        }
+        SysDept dept =SysDept.builder().name(param.getName()).parentId(param.getParentId())
+                .seq(param.getSeq()).remark(param.getRemark()).build();
+        // 计算部门层级
+        dept.setLevel(LevelUtil.calLevel(getLevel(param.getParentId()),param.getParentId()));
+
+        dept.setOperator("system"); //TODO
+        dept.setOperator("127.0.0.1"); //TODO
+        dept.setOperateTime(new Date());
+        deptMapper.insertSelective(dept);
+    }
+```
+树的层级结构：
+```java
+//首先要获取部门树级结构要定义树结构的类型：
+@Getter
+@Setter
+@ToString
+public class DeptLevelDto extends SysDept{
+
+    // 用来接收传入的树形结构层次
+    private List<DeptLevelDto> deptList = Lists.newArrayList();
+
+    public static DeptLevelDto newTrue(SysDept dept){
+        DeptLevelDto dto = new DeptLevelDto();
+        //把dept接收的数据拷贝到 dto
+        BeanUtils.copyProperties(dept,dto);
+        return dto;
+    }
+}
+//获取全部的部门比较部门的层级
+List<SysDept> getAll();
+/**
+    <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_dept
+  </select>
+  */
+ // 获取树形的列表,并遍历进行排序：
+  /**
+   * @Author hanxx
+   * @Date 2018/4/20-16:15
+   * 树形结构的服务类
+   */
+  @Service
+  public class SysTreeServiceImpl implements SysTreeService{
+  
+      @Autowired
+      private SysDeptMapper deptMapper;
+  
+      @Override
+      public List<DeptLevelDto> deptTree() {
+          List<SysDept> list = deptMapper.getAll();
+  
+          List<DeptLevelDto> dtoList = Lists.newArrayList();
+          for (SysDept dept : list) {
+              DeptLevelDto dto = DeptLevelDto.newTrue(dept);
+              dtoList.add(dto);
+          }
+          return toTree(dtoList);
+      }
+  
+      /**
+       * 转换成树形结构
+       * @param list
+       * @return
+       */
+      public List<DeptLevelDto> toTree(List<DeptLevelDto> list){
+          if (CollectionUtils.isEmpty(list)){
+              return Lists.newArrayList();
+          }
+          // map类型{key：[dept1],[dept2]}
+          Multimap<String,DeptLevelDto> multimap = ArrayListMultimap.create();
+          List<DeptLevelDto> depts = Lists.newArrayList();
+  
+          for (DeptLevelDto dto : list){
+              multimap.put(dto.getLevel(),dto);
+              // 如果是顶级目录
+              if (LevelUtil.ROOT.equals(dto.getLevel())){
+                  depts.add(dto);
+              }
+          }
+          // 按照 seq 从小到大排序
+          Collections.sort(depts, new Comparator<DeptLevelDto>() {
+              @Override
+              public int compare(DeptLevelDto o1, DeptLevelDto o2) {
+                  return o1.getSeq() - o2.getSeq();
+              }
+          });
+          // 递归
+          transformDeptTree(depts, LevelUtil.ROOT, multimap);
+          return depts;
+      }
+      //递归排序：
+      public void transformDeptTree(List<DeptLevelDto> dtos,String level,Multimap<String,DeptLevelDto> multimap){
+          for (int i = 0; i<dtos.size();i++){
+              //遍历每个元素
+              DeptLevelDto dto =dtos.get(i);
+              //处理当前的层级
+              String nextLevel = LevelUtil.calLevel(level,dto.getId());
+              // 处理下一层
+              List<DeptLevelDto> temp = (List<DeptLevelDto>) multimap.get(nextLevel);
+              if (CollectionUtils.isNotEmpty(temp)){
+                  // 排序
+                  Collections .sort(temp, deptLevelComparator);
+                  // 设置下一层部门
+                  dto.setDeptList(temp);
+                  // 进入下层处理
+                  transformDeptTree(temp,nextLevel,multimap);
+              }
+          }
+      }
+  
+      public Comparator<DeptLevelDto> deptLevelComparator = new Comparator<DeptLevelDto>() {
+          @Override
+          public int compare(DeptLevelDto o1, DeptLevelDto o2) {
+              return o1.getSeq() - o2.getSeq();
+          }
+      };
+  }
+  //获取树形的controller
+   @RequestMapping("/tree.json")
+      @ResponseBody
+      public JsonData tree(){
+          //获取列表
+          List<DeptLevelDto> dtoList =treeService.deptTree();
+  
+          return JsonData.success(dtoList);
+      }
+```
+更新部门接口开发：
+```text
+/**
+* 更新设计到 获取部门树 批量更新部门树, 判断更新的部门是否已经存在
+*/
+//mapper设计：
+ List<SysDept> getChildDeptListByLevel(@Param("level") String level);
+
+    /**
+     * 批量更新level
+     */
+    void batchUpdateLevel(@Param("depts") List<SysDept> depts);
+
+    int countByNameAndParentId(@Param("parentId") int parentId,@Param("deptName") String deptName,@Param("id") Integer id);
+<select id="getChildDeptListByLevel" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_dept
+    WHERE level LIKE #{level} || '.%'
+  </select>
+
+  <update id="batchUpdateLevel" parameterType="map">
+    <foreach collection="depts" item="sysDept" separator=";">
+      UPDATE sys_dept
+      SET level = #{dept.level}
+      WHERE id = #{dept.id}
+    </foreach>
+  </update>
+  
+  <select id="countByNameAndParentId" parameterType="map" resultType="int">
+    SELECT count(1)
+    FROM sys_dept
+    WHERE parent_id = #{parentId}
+    AND name = #{deptName}
+    <if test="id != null">
+      AND id != #{id}
+    </if>
+  </select>
+  更新方法：
+   @Override
+      public void update(DeptParam param) {
+          BeanValidation.validateException(param);
+          //验证部门是否已存在
+          if (check(param.getParentId(),param.getName(),param.getId())){
+              throw new ParamValidateException("同一层级下部门名称已存在");
+          }
+          SysDept before = deptMapper.selectByPrimaryKey(param.getId());
+          Preconditions.checkNotNull(before,"您要更新的部门不存在！");
+          if (check(param.getParentId(),param.getName(),param.getId())){
+              throw new ParamValidateException("同一层级下部门名称已存在");
+          }
+          SysDept after = SysDept.builder().id(param.getId()).name(param.getName()).parentId(param.getParentId())
+                  .seq(param.getSeq()).remark(param.getRemark()).build();
+          after.setLevel(LevelUtil.calLevel(getLevel(param.getParentId()),param.getParentId()));
+  
+          after.setOperator("system"); //TODO
+          after.setOperator("127.0.0.1"); //TODO
+          after.setOperateTime(new Date());
+  
+          updateWithChild(before,after);
+  
+      }
+  
+      @Transactional
+      @Override
+      public void updateWithChild(SysDept before, SysDept after) {
+  
+  
+          String newLevelPrefix = after.getLevel();
+          String oldLevelPrefix = before.getLevel();
+          // 如果更新在其他部门需要变更部门的树
+          if(!newLevelPrefix.equals(oldLevelPrefix)){
+              List<SysDept> deptList =deptMapper.getChildDeptListByLevel(oldLevelPrefix);
+              if (CollectionUtils.isNotEmpty(deptList)){
+                  for (SysDept dept : deptList){
+                      String level = dept.getLevel();
+                      if (level.indexOf(oldLevelPrefix) == 0){
+                          level = newLevelPrefix + level.substring(oldLevelPrefix.length());
+                          dept.setLevel(level);
+                      }
+                  }
+                  deptMapper.batchUpdateLevel(deptList);
+              }
+          }
+          deptMapper.updateByPrimaryKey(after);
+      }
+      验证部门是否存在的方法：
+       @Override
+          public boolean check(Integer parentId, String deptName, Integer paramId) {
+              // TODO:
+              return deptMapper.countByNameAndParentId(parentId,deptName,paramId)>0;
+          }
 ```

@@ -5,15 +5,13 @@ import com.hanxx.permission.common.JsonData;
 import com.hanxx.permission.dao.SysAclModuleMapper;
 import com.hanxx.permission.exception.PermissionException;
 import com.hanxx.permission.model.SysAclModule;
-import com.hanxx.permission.test.Param;
+import com.hanxx.permission.param.TestParam;
 import com.hanxx.permission.util.BeanValidation;
 import com.hanxx.permission.util.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Map;
 
 /**
  * 测试开发环境
@@ -47,15 +45,15 @@ public class TestController {
 
     /**
      * 自定义验证的验证与验证异常
-     * @param param
+     * @param testParam
      * @return
      */
     @RequestMapping("/validate.json")  //返回json请求规定加上.json
     @ResponseBody
-    public JsonData validate(Param param){
+    public JsonData validate(TestParam testParam){
         log.info("Hello validate!!! ");
         /*try {
-            Map<String,String> map = BeanValidation.validateObject(param);
+            Map<String,String> map = BeanValidation.validateObject(testParam);
             if (MapUtils.isNotEmpty(map)){
                 for (Map.Entry<String,String> entry : map.entrySet()){
                     log.info("{}--{}",entry.getKey(),entry.getValue());
@@ -64,7 +62,7 @@ public class TestController {
         } catch (Exception e){
         }*/
         // 使用验证异常
-        BeanValidation.validateException(param);
+        BeanValidation.validateException(testParam);
         return JsonData.success("Hello, validate");
     }
 
@@ -74,12 +72,12 @@ public class TestController {
      */
     @RequestMapping("/application.json")  //返回json请求规定加上.json
     @ResponseBody
-    public JsonData application(Param param){
+    public JsonData application(TestParam testParam){
         log.info("Hello permission manager !!! ");
         SysAclModuleMapper moduleMapper = ApplicationContextHelper.popBean(SysAclModuleMapper.class);
         SysAclModule module = moduleMapper.selectByPrimaryKey(1);
         log.info(JsonMapper.objString(module));
-        BeanValidation.validateException(param);
+        BeanValidation.validateException(testParam);
         return JsonData.success("spring上下文与json转换类型成功！");
     }
 
