@@ -23,6 +23,12 @@
     <context:component-scan base-package="com.hanxx.permission.controller" />
     <context:component-scan base-package="com.hanxx.permission.service" />
 
+    <!--资源文件的配置-->
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/assets/**" location="/assets/"/>
+    <mvc:resources mapping="/bootstrap3.3.5/**" location="bootstrap3.3.5/"/>
+
     <!--配置bean-->
 
     <!--spring上下文工具类-->
@@ -41,7 +47,7 @@
     <!--jsp返回视图解析器-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!--前缀-->
-        <property name="prefix" value="/views/" />
+        <property name="prefix" value="/WEB-INF/views/" />
         <!--后缀-->
         <property name="suffix" value=".jsp" />
     </bean>

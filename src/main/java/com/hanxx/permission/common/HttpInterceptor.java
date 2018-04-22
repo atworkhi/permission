@@ -45,7 +45,7 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
         String url = request.getRequestURI().toString();    //请求地址
         Map map =request.getParameterMap();                 //请求参数
         log.info("请求正常结束后==》》url:{},params:{}",url, JsonMapper.objString(map));
-
+        removeThreadLocalInfo();
     }
 
     /**
@@ -61,6 +61,14 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
         String url = request.getRequestURI().toString();    //请求地址
         Map map =request.getParameterMap();                 //请求参数
         log.info("请求结束后==》》url:{},params:{}",url, JsonMapper.objString(map));
+        //移除
+        removeThreadLocalInfo();
+    }
 
+    /**
+     * 移除ThreadLocal绑定的信息
+     */
+    public void removeThreadLocalInfo(){
+        RequestHolder.remove();
     }
 }

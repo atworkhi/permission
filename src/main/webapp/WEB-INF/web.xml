@@ -29,7 +29,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>spring</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 
   <!--编码过滤器配置-->
@@ -47,7 +47,7 @@
   </filter>
   <filter-mapping>
     <filter-name>encodingFilter</filter-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
   <!--druid的访问-->
   <servlet>
@@ -81,8 +81,18 @@
     <filter-name>DruidFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <!--登陆拦截-->
+  <filter>
+    <filter-name>loginFilter</filter-name>
+    <filter-class>com.hanxx.permission.filter.LoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>loginFilter</filter-name>
+    <url-pattern>/sys/*</url-pattern>
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
   <!--欢迎页面-->
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>signin.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

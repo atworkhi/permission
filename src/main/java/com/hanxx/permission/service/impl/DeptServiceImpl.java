@@ -1,12 +1,14 @@
 package com.hanxx.permission.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.hanxx.permission.common.RequestHolder;
 import com.hanxx.permission.dao.SysDeptMapper;
 import com.hanxx.permission.exception.ParamValidateException;
 import com.hanxx.permission.model.SysDept;
 import com.hanxx.permission.param.DeptParam;
 import com.hanxx.permission.service.DeptService;
 import com.hanxx.permission.util.BeanValidation;
+import com.hanxx.permission.util.IPUtils;
 import com.hanxx.permission.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -61,8 +63,8 @@ public class DeptServiceImpl implements DeptService{
         // 计算部门层级
         dept.setLevel(LevelUtil.calLevel(getLevel(param.getParentId()),param.getParentId()));
 
-        dept.setOperator("system"); //TODO
-        dept.setOperator("127.0.0.1"); //TODO
+        dept.setOperator(RequestHolder.getCurrentUser().getUsername());
+        dept.setOperateIp(IPUtils.getRemoteIP(RequestHolder.getCurrentRequest()));
         dept.setOperateTime(new Date());
         deptMapper.insertSelective(dept);
     }
@@ -87,8 +89,8 @@ public class DeptServiceImpl implements DeptService{
                 .seq(param.getSeq()).remark(param.getRemark()).build();
         after.setLevel(LevelUtil.calLevel(getLevel(param.getParentId()),param.getParentId()));
 
-        after.setOperator("system"); //TODO
-        after.setOperator("127.0.0.1"); //TODO
+        after.setOperator(RequestHolder.getCurrentUser().getUsername());
+        after.setOperateIp(IPUtils.getRemoteIP(RequestHolder.getCurrentRequest()));
         after.setOperateTime(new Date());
 
         updateWithChild(before,after);

@@ -6,6 +6,7 @@ import com.hanxx.permission.param.DeptParam;
 /**
  * @Author hanxx
  * @Date 2018/4/20-10:29
+ * @DESC: 部门
  */
 public interface DeptService {
 

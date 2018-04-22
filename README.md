@@ -941,7 +941,7 @@ public class ApplicationContextHelper implements ApplicationContextAware{
         
 ```
 HTTP请求前后的监听实现：interceptor
-```java
+```text
 /**
  * Author:hangx
  * Date: 2018/4/19 22:09
@@ -1008,7 +1008,7 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
 ### 实际功能的实现：
 ##### 部门模块的开发：
 部门新增模块：
-```java
+```text
 //1. 部门层级结构的树形书工具类
 /**
  * @Author hanxx
@@ -1135,7 +1135,7 @@ public interface DeptService {
     }
 ```
 树的层级结构：
-```java
+```text
 //首先要获取部门树级结构要定义树结构的类型：
 @Getter
 @Setter
@@ -1345,4 +1345,45 @@ List<SysDept> getAll();
               // TODO:
               return deptMapper.countByNameAndParentId(parentId,deptName,paramId)>0;
           }
+```
+部门页面的开发：
+```text
+新建接口用来访问页面：
+  @RequestMapping("/page.page")
+    public ModelAndView page(){
+        return  new ModelAndView("dept");
+    }
+    新建 dept.js 
+    引入静态资源文件 与 bootstrap ACE 模版 新建通用common方法 引入资源文件
+    注意：<property name="prefix" value="/WEB-INF/views/" />
+    资源文件允许访问：
+     <!--资源文件的配置-->
+        <mvc:resources mapping="/js/**" location="/js/"/>
+        <mvc:resources mapping="/css/**" location="/css/"/>
+        <mvc:resources mapping="/assets/**" location="/assets/"/>
+        <mvc:resources mapping="/bootstrap3.3.5/**" location="/bootstrap3.3.5/"/>
+        
+```
+#### 用户管理的实现：
+```text
+用户元素的实现：UserParam
+自定义手机号码验证：@PhoneValidation(message)
+新增用户的service开发：userService
+密码工具类的创建：PasswordUtil
+用户登陆功能的实现：UserController signin/login.page
+用户退出界面的开发 
+通用分页插件： common/page.jsp  beans/page*.java
+处理高并发：ThreadLocal /common/RequestHolder.java
+            定义filter拦截请求，使用THreadLoad
+            在 requestHandler中调用结束方法
+登陆拦截与通过ThreadLocal自动获取更新信息的人：LoginFilter.java
+IP获取工具类与发送邮件工具类：
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-email</artifactId>
+        <version>1.4</version>
+    </dependency>
+
+
 ```

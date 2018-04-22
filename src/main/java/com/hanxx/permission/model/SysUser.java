@@ -1,7 +1,14 @@
 package com.hanxx.permission.model;
 
+import lombok.*;
+
 import java.util.Date;
 
+
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class SysUser {
     private Integer id;
 

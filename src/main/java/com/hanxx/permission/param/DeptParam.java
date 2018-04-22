@@ -24,7 +24,7 @@ public class DeptParam {
     @Length(max = 15, min = 2, message = "部门名称需要在2-15个字之间")
     private String name;    //部门名称
 
-    private  Integer parentId;  //上级部门ID
+    private  Integer parentId = 0;  //上级部门ID 初始化为顶级菜单
 
     @NotNull(message = "排序权重不能为空")
     private Integer seq;    //排序
