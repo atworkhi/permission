@@ -1384,6 +1384,12 @@ IP获取工具类与发送邮件工具类：
         <artifactId>commons-email</artifactId>
         <version>1.4</version>
     </dependency>
-
+```
+#### 权限管理模块
+```text
+权限管理模块： aclModel
+实体类 AclModelParam.java
+controller的实现 sysAclModelController
+新增功能service: AclModelService
 
 ```

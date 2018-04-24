@@ -5,5 +5,5 @@ package com.hanxx.permission.dao;
  * Date: 2018/4/18 23:29
  * DESC:
  */
-public class TestDao {
+public interface TestDao {
 }
