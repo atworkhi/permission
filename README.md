@@ -1392,6 +1392,7 @@ IP获取工具类与发送邮件工具类：
 controller的实现 sysAclModelController
 新增功能service: AclModelService
 更新功能的实现：需要连同子模块一起更新
+权限管理模块数层结构的设计;
 
 
 ```
