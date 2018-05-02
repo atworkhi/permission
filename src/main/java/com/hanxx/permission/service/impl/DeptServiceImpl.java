@@ -118,6 +118,6 @@ public class DeptServiceImpl implements DeptService{
                 deptMapper.batchUpdateLevel(deptList);
             }
         }
-        deptMapper.updateByPrimaryKey(after);
+        deptMapper.updateByPrimaryKeySelective(after);
     }
 }

@@ -1,7 +1,11 @@
 package com.hanxx.permission.service;
 
 import com.google.common.collect.Multimap;
+<<<<<<< HEAD
 import com.hanxx.permission.tree.AclModuleLevelDto;
+=======
+import com.hanxx.permission.tree.AclModelLevelDto;
+>>>>>>> origin/master
 import com.hanxx.permission.tree.DeptLevelDto;
 
 import java.util.List;
@@ -13,13 +17,22 @@ import java.util.List;
  */
 public interface SysTreeService {
 
+<<<<<<< HEAD
     // 部门
+=======
+    /**
+     * 部门相关
+     * @return
+     */
+
+>>>>>>> origin/master
     List<DeptLevelDto> deptTree();
 
     List<DeptLevelDto> deptToTree(List<DeptLevelDto> list);
 
     void transformDeptTree(List<DeptLevelDto> dtos,String level,Multimap<String,DeptLevelDto> multimap);
 
+<<<<<<< HEAD
     // 权限管理模块
 
     List<AclModuleLevelDto> aclModuleTree();
@@ -29,4 +42,15 @@ public interface SysTreeService {
     void transformAclModuleTree(List<AclModuleLevelDto> dtos,String level,Multimap<String,AclModuleLevelDto> multimap);
 
 
+=======
+    /**
+     * 权限管理模块相关
+     * @return
+     */
+    List<AclModelLevelDto> aclModelTree();
+
+    List<AclModelLevelDto> aclModelToTree(List<AclModelLevelDto> list);
+
+    void transformAclModelTree(List<AclModelLevelDto> dtos,String level,Multimap<String,AclModelLevelDto> multimap);
+>>>>>>> origin/master
 }

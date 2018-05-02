@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+=======
+<%--
+  Created by IntelliJ IDEA.
+  User: hanxx
+  Date: 2018/4/27
+  Time: 17:08
+  To change this template use File | Settings | File Templates.
+--%>
+>>>>>>> origin/master
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -107,8 +117,13 @@
                 <td><label for="aclModuleStatus">状态</label></td>
                 <td>
                     <select id="aclModuleStatus" name="status" data-placeholder="选择状态" style="width: 150px;">
+<<<<<<< HEAD
                         <option value="1">有效</option>
                         <option value="0">无效</option>
+=======
+                        <option value="0">有效</option>
+                        <option value="1">无效</option>
+>>>>>>> origin/master
                         <option value="2">删除</option>
                     </select>
                 </td>
@@ -152,8 +167,13 @@
                 <td><label for="aclStatus">状态</label></td>
                 <td>
                     <select id="aclStatus" name="status" data-placeholder="选择状态" style="width: 150px;">
+<<<<<<< HEAD
                         <option value="1">有效</option>
                         <option value="0">无效</option>
+=======
+                        <option value="0">有效</option>
+                        <option value="1">无效</option>
+>>>>>>> origin/master
                     </select>
                 </td>
             </tr>
@@ -488,7 +508,11 @@
                             return aclModuleMap[this.aclModuleId].name;
                         },
                         "showStatus": function() {
+<<<<<<< HEAD
                             return this.status == 1 ? "有效": "无效";
+=======
+                            return this.status == 0 ? "有效": "无效";
+>>>>>>> origin/master
                         },
                         "showType": function() {
                             return this.type == 1 ? "菜单" : (this.type == 2 ? "按钮" : "其他");
@@ -614,3 +638,7 @@
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
