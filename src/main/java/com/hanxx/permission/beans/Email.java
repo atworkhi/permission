@@ -9,12 +9,13 @@ import java.util.Set;
  * @Date: 2018/4/22 22:27
  * @DESC: 发送邮件的
  */
-@Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Builder
+@Getter
+@Setter
 public class Email {
 
     // 邮件主题

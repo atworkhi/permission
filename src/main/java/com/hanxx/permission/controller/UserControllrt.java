@@ -48,7 +48,7 @@ public class UserControllrt {
      * @return
      */
     @RequestMapping("/login")
-    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void login(HttpServletRequest request, HttpServletResponse response){
         // 从前段获取用户输入的用户名或密码 错误信息 登陆前访问的页面
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -73,21 +73,39 @@ public class UserControllrt {
             request.getSession().setAttribute("user",user);
             // 判断登陆是否为其他页面跳转过来，如果是返回以前页面
             if (StringUtils.isNoneBlank(ret)){
-                response.sendRedirect(ret);
+                try {
+                    response.sendRedirect(ret);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }else {
                 // 跳转到指定的页面：
-                response.sendRedirect("/admin/index.page");
+                try {
+                    response.sendRedirect("/admin/index.page");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         // 登陆不成功 把信息绑定回去
         request.setAttribute("error",error);
         request.setAttribute("username",username);
+        //去往登陆页面
+        String path = "signin.jsp";
+
         if (StringUtils.isNoneBlank(ret)){
             request.setAttribute("ret",ret);
         }
-        //去往登陆页面
-        String path = "signin.jsp";
-        request.getRequestDispatcher(path).forward(request,response);
+
+        try {
+            request.getRequestDispatcher(path).forward(request,response);
+            return;
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
