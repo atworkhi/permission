@@ -151,7 +151,6 @@
   </update>
 
   <select id="getAll" resultMap="BaseResultMap">
-<<<<<<< HEAD
     select <include refid="Base_Column_List"/>
     FROM sys_acl_module
   </select>
@@ -167,7 +166,7 @@
       and id != #{id}
     </if>
   </select>
-  
+
   <select id="getChildAclModuleListByLevel" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/>
     FROM sys_acl_module
@@ -181,38 +180,4 @@
     </foreach>
 
   </update>
-=======
-    select
-    <include refid="Base_Column_List" />
-    from sys_acl_module
-  </select>
-
- <select id="getChildAclModelListByLevel" resultMap="BaseResultMap">
-   select
-   <include refid="Base_Column_List" />
-   from sys_acl_module
-   WHERE level LIKE #{level} || '.%'
- </select>
-  
-  <update id="betchUpdateLevel" parameterType="map">
-    <foreach collection="sysAclModules" item="aclModel" separator=";">
-      UPDATE sys_acl_module
-      SET level = #{aclModel.level}
-      where id = #{aclModel.id}
-    </foreach>
-  </update>
-
-  <select id="countByNameAndParentId" parameterType="map" resultType="int">
-    select count(1)
-    from  sys_acl_module
-    where name = #{sysModelName}
-    <if test="parentId != null ">
-      AND parent_id = #{parentId}
-    </if>
-    <if test="id != null">
-      AND id != #{id}
-    </if>
-  </select>
-
->>>>>>> origin/master
 </mapper>
