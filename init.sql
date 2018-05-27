@@ -61,7 +61,7 @@ CREATE TABLE `sys_acl` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '权限ID',
   `code` varchar(20) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '权限码',
   `name` varchar(20) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '权限名称',
-  `acl_model_id` int(11) NOT NULL DEFAULT '0' COMMENT '权限所在的权限模块ID',
+  `acl_module_id` int(11) NOT NULL DEFAULT '0' COMMENT '权限所在的权限模块ID',
   `url` varchar(100) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '请求的URL 可以填写正则',
   `type` int(11) NOT NULL DEFAULT '1' COMMENT '类型:1菜单2按钮3其他',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '状态：1正常0冻结',

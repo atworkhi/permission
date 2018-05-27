@@ -48,7 +48,6 @@ public class SysAclModuleController {
     public JsonData tree(){
         //获取列表
         List<AclModuleLevelDto> aclModuleLevelDtos =treeService.aclModuleTree();
-
         return JsonData.success(aclModuleLevelDtos);
     }
 

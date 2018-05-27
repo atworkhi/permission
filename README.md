@@ -1399,3 +1399,7 @@ controller的实现 sysAclModelController
 ```text
 实现权限模块的树形结构 如 部门
 ```
+#### 权限点方面的开发：
+```text
+实现权限的分页展示与修改
+```

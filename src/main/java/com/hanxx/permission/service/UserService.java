@@ -48,6 +48,12 @@ public interface UserService {
      */
     SysUser findKeyWord(String keyWord);
 
+    /**
+     * 根据部分分页显示用户列表
+     * @param deptId
+     * @param pageQuery
+     * @return
+     */
     PageResult<SysUser> getPageByDeptId(int deptId, PageQuery pageQuery);
 
 

@@ -36,8 +36,8 @@ public class AclModuleServiceImpl implements AclModuleService {
     }
 
     @Override
-    public String getLevel(Integer deptId) {
-        SysAclModule aclModule = aclModuleMapper.selectByPrimaryKey(deptId);
+    public String getLevel(Integer aclModuleId) {
+        SysAclModule aclModule = aclModuleMapper.selectByPrimaryKey(aclModuleId);
         if (aclModule == null) {
             return null;
         }

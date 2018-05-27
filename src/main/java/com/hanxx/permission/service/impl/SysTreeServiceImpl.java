@@ -58,6 +58,7 @@ public class SysTreeServiceImpl implements SysTreeService {
         }
         // map类型{key：[dept1],[dept2]}
         Multimap<String, DeptLevelDto> multimap = ArrayListMultimap.create();
+        // 顶级目录的列表
         List<DeptLevelDto> depts = Lists.newArrayList();
 
         for (DeptLevelDto dto : list) {
@@ -106,12 +107,15 @@ public class SysTreeServiceImpl implements SysTreeService {
         }
     };
 
+
+    // 以下为全线模块的树形结构转换
     @Override
     public List<AclModuleLevelDto> aclModuleTree() {
         List<SysAclModule> aclModuleList = aclModuleMapper.getAll();
         List<AclModuleLevelDto> dtoList = Lists.newArrayList();
         for (SysAclModule aclModule : aclModuleList) {
             dtoList.add(AclModuleLevelDto.adapt(aclModule));
+
         }
         return aclModuleToTree(dtoList);
     }
@@ -123,6 +127,7 @@ public class SysTreeServiceImpl implements SysTreeService {
         }
         // level -> [aclmodule1, aclmodule2, ...] Map<String, List<Object>>
         Multimap<String, AclModuleLevelDto> levelAclModuleMap = ArrayListMultimap.create();
+        // 顶级目录
         List<AclModuleLevelDto> rootList = Lists.newArrayList();
 
         for (AclModuleLevelDto dto : list) {
@@ -131,6 +136,7 @@ public class SysTreeServiceImpl implements SysTreeService {
                 rootList.add(dto);
             }
         }
+
         Collections.sort(rootList, aclModuleSeqComparator);
         transformAclModuleTree(rootList, LevelUtil.ROOT, levelAclModuleMap);
         return rootList;
@@ -140,11 +146,12 @@ public class SysTreeServiceImpl implements SysTreeService {
     public void transformAclModuleTree(List<AclModuleLevelDto> dtos, String level, Multimap<String, AclModuleLevelDto> multimap) {
         for (int i = 0; i < dtos.size(); i++){
             AclModuleLevelDto dto = dtos.get(i);
+
             String nextLevel = LevelUtil.calLevel(level,dto.getId());
             List<AclModuleLevelDto> tempList = (List<AclModuleLevelDto>) multimap.get(nextLevel);
             if (CollectionUtils.isNotEmpty(tempList)){
                 Collections.sort(tempList,aclModuleSeqComparator);
-                dto.setAclModuleLevelDtoList(tempList);
+                dto.setAclModuleList(tempList);
                 transformAclModuleTree(tempList,nextLevel,multimap);
             }
         }

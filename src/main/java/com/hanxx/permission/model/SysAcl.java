@@ -1,7 +1,14 @@
 package com.hanxx.permission.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SysAcl {
     private Integer id;
 
@@ -9,7 +16,7 @@ public class SysAcl {
 
     private String name;
 
-    private Integer aclModelId;
+    private Integer aclModuleId;
 
     private String url;
 
@@ -51,12 +58,12 @@ public class SysAcl {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getAclModelId() {
-        return aclModelId;
+    public Integer getAclModuleId() {
+        return aclModuleId;
     }
 
-    public void setAclModelId(Integer aclModelId) {
-        this.aclModelId = aclModelId;
+    public void setAclModuleId(Integer aclModuleId) {
+        this.aclModuleId = aclModuleId;
     }
 
     public String getUrl() {
@@ -122,4 +129,6 @@ public class SysAcl {
     public void setOperateIp(String operateIp) {
         this.operateIp = operateIp == null ? null : operateIp.trim();
     }
+
+
 }

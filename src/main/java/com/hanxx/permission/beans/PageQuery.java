@@ -24,8 +24,7 @@ public class PageQuery {
     private int pageSize = 10;  // 每页页码
 
     @Setter
-    private int offset; // 便宜量
-
+    private int offset; // 偏移量
     public int getOffset(){
         return (pageNo - 1)* pageSize;
     }

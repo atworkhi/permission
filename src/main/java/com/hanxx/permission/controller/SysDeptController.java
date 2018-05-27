@@ -47,7 +47,6 @@ public class SysDeptController {
     public JsonData tree(){
         //获取列表
         List<DeptLevelDto> dtoList =treeService.deptTree();
-
         return JsonData.success(dtoList);
     }
 

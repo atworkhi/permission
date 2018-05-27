@@ -81,7 +81,7 @@
     <filter-name>DruidFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  <!--登陆拦截-->
+  <!--&lt;!&ndash;登陆拦截&ndash;&gt;-->
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>com.hanxx.permission.filter.LoginFilter</filter-class>

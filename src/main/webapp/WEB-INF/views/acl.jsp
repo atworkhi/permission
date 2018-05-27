@@ -258,7 +258,7 @@
                 }
             })
         }
-
+        // 新增
         $(".aclModule-add").click(function () {
             $("#dialog-aclModule-form").dialog({
                 model: true,
@@ -324,7 +324,7 @@
                 }
             })
         }
-
+        // 选择渲染
         function recursiveRenderAclModuleSelect(aclModuleList, level) {
             level = level | 0;
             if (aclModuleList && aclModuleList.length > 0) {
@@ -344,11 +344,14 @@
                 });
             }
         }
-
+        // 递归的渲染
         function recursiveRenderAclModule(aclModuleList) {
+            // 如果存在树结构
             if (aclModuleList && aclModuleList.length > 0) {
+                // 遍历
                 $(aclModuleList).each(function (i, aclModule) {
                     aclModuleMap[aclModule.id] = aclModule;
+                    // 递归渲染
                     if (aclModule.aclModuleList && aclModule.aclModuleList.length > 0) {
                         var rendered = Mustache.render(aclModuleListTemplate, {
                             aclModuleList: aclModule.aclModuleList,
@@ -357,17 +360,19 @@
                                     return (this.aclModuleList && this.aclModuleList.length > 0) ? "" : "hidden";
                                 }
                             },
+                            // 不展示
                             "displayClass": function () {
                                 return "hidden";
                             }
                         });
                         $("#aclModule_" + aclModule.id).append(rendered);
+                        // 递归处理
                         recursiveRenderAclModule(aclModule.aclModuleList);
                     }
                 })
             }
         }
-
+        // 点击事件绑定
         function bindAclModuleClick() {
             $(".sub-aclModule").click(function (e) {
                 e.preventDefault();
